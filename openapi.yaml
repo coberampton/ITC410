@@ -94,7 +94,7 @@ paths:
   /characters:
     get:
       tags:
-        - characters
+        - Characters
       summary: get characters
       parameters:
         - name: name
@@ -114,7 +114,7 @@ paths:
           description: Not authenticated.
     post:
       tags:
-        - characters
+        - Characters
       summary: add a character
       requestBody:
         $ref: '#/components/requestBodies/SetCharacter'
