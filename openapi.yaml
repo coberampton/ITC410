@@ -4,7 +4,9 @@ info:
   version: v1
 paths:
   /accounts:
+    x-controller: accounts
     post:
+      x-operation: createAccount
       tags:
         - Accounts
       summary: Create an account
@@ -38,9 +40,11 @@ paths:
         409:
           description: Account already exists.
   /accounts/{accountId}:
+    x-controller: accounts
     parameters:
       - $ref: '#/components/parameters/PathAccountId'
     delete:
+      x-operation: deleteAccount
       tags:
         - Accounts
       summary: Delete an account.
@@ -52,9 +56,11 @@ paths:
         403:
           description: Access denied.
   /accounts/{accountId}/login:
+    x-controller: accounts
     parameters:
       - $ref: '#/components/parameters/PathAccountId'
     put:
+      x-operation: login
       tags:
         - Accounts
       summary: Log in.
@@ -80,9 +86,11 @@ paths:
         403:
           description: Access denied.
   /accounts/{accountId}/logout:
+    x-controller: accounts
     parameters:
       - $ref: '#/components/parameters/PathAccountId'
     put:
+      x-operation: logout
       tags:
         - Accounts
       summary: Log out.
@@ -92,7 +100,9 @@ paths:
         403:
           description: Access denied.
   /characters:
+    x-controller: characters
     get:
+      x-operation: getCharacters
       tags:
         - Characters
       summary: get characters
@@ -113,6 +123,7 @@ paths:
         401:
           description: Not authenticated.
     post:
+      x-operation: createCharacter
       tags:
         - Characters
       summary: add a character
@@ -130,9 +141,11 @@ paths:
         401:
           description: Not 
   /characters/{characterId}:
+    x-controller: characters
     parameters:
       - $ref: '#/components/parameters/PathCharacterId'
     put:
+      x-operation: updateCharacter
       tags:
         - Characters
       summary: Update a character.
@@ -154,6 +167,7 @@ paths:
         404:
           description: Not found.
     delete:
+      x-operation: deleteCharacter
       tags:
         - Characters
       summary: Delete a character.
@@ -165,9 +179,11 @@ paths:
         403:
           description: Access denied
   /characters/{characterId}/files:
+    x-controller: characters
     parameters:
       - $ref: '#/components/parameters/PathCharacterId'
     post:
+      x-operation: uploadFile
       tags:
         - Files
       summary: Add a file to a character.
@@ -192,10 +208,12 @@ paths:
         404:
           description: Character not found.
   /characters/{characterId}/files/{fileId}:
+    x-controller: characters
     parameters:
       - $ref: '#/components/parameters/PathCharacterId'
       - $ref: '#/components/parameters/PathFileId'
     get:
+      x-operation: downloadFile
       tags:
         - Files
       summary: Get a file.
@@ -213,6 +231,7 @@ paths:
         404:
           description: Character or file not found.
     delete:
+      x-operation: deleteFile
       tags:
         - Files
       summary: Delete a file.
