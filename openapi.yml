@@ -1,0 +1,319 @@
+openapi: 3.0.3
+info:
+  title: My API
+  version: v1
+paths:
+  /accounts:
+    x-controller: accounts
+    post:
+      x-operation: createAccount
+      tags:
+        - Accounts
+      summary: Create an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - name
+                - password
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+                  format: password
+            example:
+              username: CoolGuy
+              name: Fred
+              password: supersecret
+      responses:
+        201:
+          description: Account created.
+        400:
+          description: Invalid request.
+        409:
+          description: Account already exists.
+  /accounts/{accountId}:
+    x-controller: accounts
+    parameters:
+      - $ref: '#/components/parameters/PathAccountId'
+    delete:
+      x-operation: deleteAccount
+      tags:
+        - Accounts
+      summary: Delete an account.
+      responses:
+        204:
+          description: Account deleted.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+  /accounts/{accountId}/login:
+    x-controller: accounts
+    parameters:
+      - $ref: '#/components/parameters/PathAccountId'
+    put:
+      x-operation: login
+      tags:
+        - Accounts
+      summary: Log in.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  format: password
+            example:
+              password: supersecret
+      responses:
+        200:
+          description: Authenticated.
+        400:
+          description: Invalid request.
+        403:
+          description: Access denied.
+  /accounts/{accountId}/logout:
+    x-controller: accounts
+    parameters:
+      - $ref: '#/components/parameters/PathAccountId'
+    put:
+      x-operation: logout
+      tags:
+        - Accounts
+      summary: Log out.
+      responses:
+        200:
+          description: Logged out.
+        403:
+          description: Access denied.
+  /characters:
+    x-controller: characters
+    get:
+      x-operation: getCharacters
+      tags:
+        - Characters
+      summary: get characters
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+            description: Success
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Characters'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+    post:
+      x-operation: createCharacter
+      tags:
+        - Characters
+      summary: add a character
+      requestBody:
+        $ref: '#/components/requestBodies/SetCharacter'
+      responses:
+        201:
+          description: Character created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+        400:
+          description: Invalid request.
+        401:
+          description: Not 
+  /characters/{characterId}:
+    x-controller: characters
+    parameters:
+      - $ref: '#/components/parameters/PathCharacterId'
+    put:
+      x-operation: updateCharacter
+      tags:
+        - Characters
+      summary: Update a character.
+      requestBody:
+        $ref: '#/components/requestBodies/SetCharacter'
+      responses:
+        200:
+          description: Character updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Characters'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+        404:
+          description: Not found.
+    delete:
+      x-operation: deleteCharacter
+      tags:
+        - Characters
+      summary: Delete a character.
+      responses:
+        204:
+          description: Character deleted
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied
+  /characters/{characterId}/files:
+    x-controller: characters
+    parameters:
+      - $ref: '#/components/parameters/PathCharacterId'
+    post:
+      x-operation: uploadFile
+      tags:
+        - Files
+      summary: Add a file to a character.
+      requestBody:
+        content:
+          binary/octet-stream:
+            schema:
+              $ref: '#/components/schemas/File'
+      responses:
+        201:
+          description: File saved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Characters'
+        400:
+          description: Invalid request.
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+        404:
+          description: Character not found.
+  /characters/{characterId}/files/{fileId}:
+    x-controller: characters
+    parameters:
+      - $ref: '#/components/parameters/PathCharacterId'
+      - $ref: '#/components/parameters/PathFileId'
+    get:
+      x-operation: downloadFile
+      tags:
+        - Files
+      summary: Get a file.
+      responses:
+        200:
+          description: File downloaded.
+          content:
+            binary/octet-stream:
+              schema:
+                $ref: '#/components/schemas/File'
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+        404:
+          description: Character or file not found.
+    delete:
+      x-operation: deleteFile
+      tags:
+        - Files
+      summary: Delete a file.
+      responses:
+        204:
+          description: File deleted
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+        404:
+          description: Character not found.
+components:
+  parameters:
+    PathAccountId:
+      name: accountId
+      in: path
+      required: true
+      schema:
+        type: string
+    PathCharacterId:
+      name: characterId
+      in: path
+      required: true
+      schema:
+        type: string
+    PathFileId:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    SetCharacter:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Character'
+  schemas:
+    File:
+      type: string
+      format: binary
+    Character:
+      type: object
+      properties:
+        characterID:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        race:
+          type: string
+        description:
+          type: string
+        favoredAttribute:
+          type: string
+        unfavoredAttribute:
+          type: string
+        files:
+          type: array
+          readOnly: true
+          items:
+            description: File ID
+            type: string
+    Characters:
+      type: array
+      items:
+        $ref: '#/components/schemas/Character'
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+  
