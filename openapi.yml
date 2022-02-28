@@ -28,6 +28,7 @@ paths:
                 password:
                   type: string
                   format: password
+                  minLength: 1
             example:
               username: CoolGuy
               name: Fred
@@ -39,14 +40,48 @@ paths:
           description: Invalid request.
         409:
           description: Account already exists.
-  /accounts/{accountId}:
+  /accounts/{username}:
     x-controller: accounts
     parameters:
-      - $ref: '#/components/parameters/PathAccountId'
+      - $ref: '#/components/parameters/PathUsername'
+    patch:
+      x-operation: updateAccount
+      tags:
+        - Accounts
+      security:
+        - cookieAuth: []
+      summary: Update an account.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  minLength: 1
+      responses:
+        200:
+          description: Account updated
+        400:
+          description: Invalid request
+        401:
+          description: Not authenticated.
+        403:
+          description: Access denied.
+        404:
+          description: Not found.
     delete:
       x-operation: deleteAccount
       tags:
         - Accounts
+      security:
+        - cookieAuth: []
       summary: Delete an account.
       responses:
         204:
@@ -55,14 +90,12 @@ paths:
           description: Not authenticated.
         403:
           description: Access denied.
-  /accounts/{accountId}/login:
-    x-controller: accounts
-    parameters:
-      - $ref: '#/components/parameters/PathAccountId'
+  /authentication/login:
+    x-controller: authentication
     put:
       x-operation: login
       tags:
-        - Accounts
+        - Authentication
       summary: Log in.
       requestBody:
         required: true
@@ -71,12 +104,16 @@ paths:
             schema:
               type: object
               required:
+                - username
                 - password
               properties:
+                username:
+                  type: string
                 password:
                   type: string
                   format: password
             example:
+              username: CoolGuy
               password: supersecret
       responses:
         200:
@@ -85,26 +122,24 @@ paths:
           description: Invalid request.
         403:
           description: Access denied.
-  /accounts/{accountId}/logout:
-    x-controller: accounts
-    parameters:
-      - $ref: '#/components/parameters/PathAccountId'
+  /authentication/logout:
+    x-controller: authentication
     put:
       x-operation: logout
       tags:
-        - Accounts
+        - Authentication
       summary: Log out.
       responses:
         200:
           description: Logged out.
-        403:
-          description: Access denied.
   /characters:
     x-controller: characters
     get:
       x-operation: getCharacters
       tags:
         - Characters
+      security:
+        - cookieAuth: []
       summary: get characters
       parameters:
         - name: name
@@ -126,6 +161,8 @@ paths:
       x-operation: createCharacter
       tags:
         - Characters
+      security:
+        - cookieAuth: []
       summary: add a character
       requestBody:
         $ref: '#/components/requestBodies/SetCharacter'
@@ -148,6 +185,8 @@ paths:
       x-operation: updateCharacter
       tags:
         - Characters
+      security:
+        - cookieAuth: []
       summary: Update a character.
       requestBody:
         $ref: '#/components/requestBodies/SetCharacter'
@@ -170,6 +209,8 @@ paths:
       x-operation: deleteCharacter
       tags:
         - Characters
+      security:
+        - cookieAuth: []
       summary: Delete a character.
       responses:
         204:
@@ -186,6 +227,8 @@ paths:
       x-operation: uploadFile
       tags:
         - Files
+      security:
+        - cookieAuth: []
       summary: Add a file to a character.
       requestBody:
         content:
@@ -216,6 +259,8 @@ paths:
       x-operation: downloadFile
       tags:
         - Files
+      security:
+        - cookieAuth: []
       summary: Get a file.
       responses:
         200:
@@ -234,6 +279,8 @@ paths:
       x-operation: deleteFile
       tags:
         - Files
+      security:
+        - cookieAuth: []
       summary: Delete a file.
       responses:
         204:
@@ -246,8 +293,8 @@ paths:
           description: Character not found.
 components:
   parameters:
-    PathAccountId:
-      name: accountId
+    PathUsername:
+      name: username
       in: path
       required: true
       schema:
@@ -271,6 +318,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Character'
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: todoSessionId
   schemas:
     File:
       type: string
