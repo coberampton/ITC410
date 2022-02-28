@@ -9,6 +9,16 @@ CREATE TABLE "accounts" (
 ALTER TABLE "accounts"
 ADD CONSTRAINT "accounts_username" UNIQUE ("username");
 
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+  "sess" json NOT NULL,
+  "expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+
 CREATE TABLE "characters" (
   "character_id" character(36) NOT NULL,
   "account_id" character(36) NOT NULL,

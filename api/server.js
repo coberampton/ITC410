@@ -6,8 +6,16 @@ const express = require('express')
 const { Pool } = require('pg')
 const path = require('path')
 const Accounts = require('./controllers/account')
+const Authentication = require('./controllers/authentication')
 const Characters = require('./controllers/characters')
+const bcrypt = require('bcryptjs')
+const passport = require('passport')
+const LocalStrategy = require('express-session').Strategy
+const session = require('express-session')
+const DatabaseAccounts = require('./database/account')
+const ConnectPgSimple = require('connect-pg-simple')(session)
 
+// set up database connection
 const pool = new Pool({
   	host: process.env.POSTGRES_HOST,
   	database: process.env.POSTGRES_DB,
@@ -26,6 +34,39 @@ pool.query('SELECT NOW()', (err, res) => {
 	}
 })
 
+// set up passport local strategy
+passport.use(new LocalStrategy((username, password, done) => {
+	DatabaseAccounts.getAccountByUsername(pool, username)
+		.then(async account => {
+			// if no account with the username was found then authentication failed
+			if (account === undefined) {
+				done(null, false)
+			} else {
+				// compare encrypted password
+				const match = await bcrypt.compare(password, account.password)
+				if (match) {
+					// passwords matched, so create the user object
+					done(null, { id: account.account_id, username: account.username, name: account.name })
+				} else {
+					const hash = await bcrypt.hash(password, 10)
+					const m2 = await bcrypt.compare(password, hash)
+
+					// passwords did not match
+					done(null, false)
+				}
+			}
+		})
+		.catch(e => done(e, null))
+}))
+
+passport.serializeUser((user, done) => {
+	done(null, JSON.stringify(user))
+})
+
+passport.deserializeUser((id, done) => {
+	done(null, JSON.parse(id))
+})
+
 const app = express()
 
 // Any paths defined in your openapi.yml will validate and parse the request
@@ -41,6 +82,7 @@ app.use(express.json())
 //  next()
 //})
 
+// validate and parse request
 app.use(enforcerMiddleware.init({ baseUrl: '/api' }))
 
 // Catch errors
@@ -49,20 +91,32 @@ enforcerMiddleware.on('error', err => {
   process.exit(1)
 }) 
 
-//app.use((req, res, next) => {
-//	const { operation } = req.enforcer
-//	if (operation.security !== undefined) {
-//		const sessionIsRequired = operataion.security.find(obj => obj.cookieAuth !== undefined)
-//		if (sessionIsRequired) {
-//			const cookie = req.cookies.todoSessionId
-//			if (cookie === undefined || req.user === undefined) {
-//				res.sendStatus(401)
-//				return
-//			}
-//		}
-//	}
-//	next()
-//})
+app.use(session({
+	store: new ConnectPgSimple({
+		pool
+	}),
+	secret: process.env.SESSION_SECRET,
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		maxAge: 2592000000 // 30 days, written in milliseconds
+	}
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.use((req, res, next) => {
+	const { operation } = req.enforcer
+	if (operation.security !== undefined) {
+		const sessionIsRequired = operataion.security.find(obj => obj.cookieAuth !== undefined)
+		if (sessionIsRequired && !req.user) {
+			res.sendStatus(401)
+			return
+		}
+	}
+	next()
+})
 
 app.use(enforcerMiddleware.route({
 	accounts: Accounts(pool),

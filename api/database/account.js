@@ -3,7 +3,6 @@ const uuid = require('uuid').v4
 
 exports.createAccount = async function (client, username, name, password) {
     const accountId = uuid()
-    const salt = await bcrypt.genSalt(10)
     const { rowCount } = await client.query({
         name: 'create-account',
         text: 'INSERT INTO accounts (account_id, username, name, password) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING',
@@ -20,6 +19,15 @@ exports.createAccount = async function (client, username, name, password) {
 exports.getAccount = async function (client, accountId) {
     const { rows } = await client.query({
         name: 'get-account-by-id',
+        text: 'SELECT * FROM accounts WHERE account_id=$1',
+        values: [accountId]
+    })
+    return rows[0]
+}
+
+exports.getAccountByUsername = async function (client, username) {
+    const { rows } = await client.query({
+        name: 'get-account-by-username',
         text: 'SELECT * FROM accounts WHERE account_id=$1',
         values: [accountId]
     })
@@ -66,4 +74,9 @@ exports.deleteAccount = async function (client, accountId) {
         values: [accountId]
     })
     return rowCount > 0
+}
+
+async function encryptPassword (password) {
+    const salt = await bcrypt.genSalt(10)
+    return await bcrypt.hash(password, salt)
 }
