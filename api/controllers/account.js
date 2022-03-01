@@ -16,6 +16,7 @@ module.exports = function (pool) {
 		},
 
 		async updateAccount (req, res) {
+			console.log('you made it here')
 			const data = req.enforcer.body
 			const { accountId } = req.enforcer.params
 

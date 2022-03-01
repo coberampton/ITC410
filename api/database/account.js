@@ -10,7 +10,7 @@ exports.createAccount = async function (client, username, name, password) {
             accountId,
             username,
             name,
-            await bcrypt.hash(password, salt)	
+            await encryptPassword(password)	
         ]
     })
     return rowCount > 0 ? accountId : undefined
