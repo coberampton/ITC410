@@ -120,6 +120,7 @@ app.use((req, res, next) => {
 
 app.use(enforcerMiddleware.route({
 	accounts: Accounts(pool),
+	authentication: Authentication(passport),
 	characters: Characters(pool)
 }))
 
