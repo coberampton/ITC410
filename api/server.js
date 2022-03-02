@@ -36,6 +36,7 @@ pool.query('SELECT NOW()', (err, res) => {
 
 // set up passport local strategy
 passport.use(new LocalStrategy((username, password, done) => {
+	console.log('passport local strategy set up')
 	DatabaseAccounts.getAccountByUsername(pool, username)
 		.then(async account => {
 			// if no account with the username was found then authentication failed
