@@ -69,7 +69,7 @@ exports.updateAccount = async  function (client, accountId, data) {
 
 exports.deleteAccount = async function (client, accountId) {
     console.log('delete account')
-    const { rowCount } = client.query({
+    const { rowCount } = await client.query({
         name: 'delete-account',
         text: 'DELETE FROM accounts WHERE account_id=$1',
         values: [accountId]
