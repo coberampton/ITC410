@@ -124,24 +124,6 @@ app.use(enforcerMiddleware.route({
 	characters: Characters(pool)
 }))
 
-//   app.use(enforcerMiddleware.route({
-//     // The "users" is mapped to via the "x-controller" value.
-//     accounts: {
-//       // The "listUsers" is mapped to via the "x-operation" or "operationId" value.
-//       async login (req, res) {
-//         const { rows } = dbClient.query('SELECT * FROM users')
-//         const users = rows.map(row => {
-//           return {
-//             id: row.id,
-//             name: row.name,
-//             email: row.email
-//           }
-//         })
-//         res.enforcer.send(users)
-//       }
-//     }
-//   }))
-
 // add fallback mocking middleware here
 app.use(enforcerMiddleware.mock())
 
