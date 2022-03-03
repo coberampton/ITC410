@@ -23,7 +23,7 @@ module.exports = function (pool) {
 			const client = await pool.connect()
 			try {
 				await client.query('BEGIN')
-				let account = await accounts.getAccount(client, username)
+				let account = await accounts.getAccountByUsername(client, username)
 				if (account === undefined) {
 					res.enforcer.status(404).send()
 				} else if (account.account_id !== req.user.id) {
