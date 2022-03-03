@@ -29,7 +29,7 @@ module.exports = function (pool) {
 				} else if (account.account_id !== req.user.id) {
 					res.enforcer.status(403).send()
 				} else {
-					await accounts.updateAccount(client, req.user.id, data)
+					await accounts.updateAccount(client, account.account_id, data) //formerly req.user.id
 					res.enforcer.status(200).send()
 				}
 				await client.query('COMMIT')
@@ -50,8 +50,8 @@ module.exports = function (pool) {
 				let account = await accounts.getAccountByUsername(client, username)
 				if (account === undefined) {
 					res.enforcer.status(204).send()
-//				} else if (account.account_id !== req.user.id) {
-//					res.enforcer.status(403).send()
+				} else if (account.account_id !== req.user.id) {
+					res.enforcer.status(403).send()
 				} else {
 					await accounts.deleteAccount(client, account.account_id)
 					res.enforcer.status(204).send()

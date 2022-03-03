@@ -59,7 +59,7 @@ exports.updateAccount = async  function (client, accountId, data) {
     if (values.length === 0) return await exports.getAccount(client, accountId)
 
     values.push(accountId)
-    const { rows } = client.query({
+    const { rows } = await client.query({
         name: 'update-account',
         text: 'UPDATE accounts SET ' + sets.join(', ') + ' WHERE account_id=$' + (values.length) + ' RETURNING *',
         values
