@@ -28,7 +28,7 @@ exports.getAccount = async function (client, accountId) {
 exports.getAccountByUsername = async function (client, username) {
     const { rows } = await client.query({
         name: 'get-account-by-username',
-        text: 'SELECT * FROM accounts WHERE account_id=$1',
+        text: 'SELECT * FROM accounts WHERE username=$1',
         values: [username]
     })
     return rows[0]
@@ -68,7 +68,7 @@ exports.updateAccount = async  function (client, accountId, data) {
 }
 
 exports.deleteAccount = async function (client, accountId) {
-    console.log('delete account')
+    console.log('delete account database')
     const { rowCount } = await client.query({
         name: 'delete-account',
         text: 'DELETE FROM accounts WHERE account_id=$1',

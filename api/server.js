@@ -106,17 +106,17 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use((req, res, next) => {
-	const { operation } = req.enforcer
-	if (operation.security !== undefined) {
-		const sessionIsRequired = operataion.security.find(obj => obj.cookieAuth !== undefined)
-		if (sessionIsRequired && !req.user) {
-			res.sendStatus(401)
-			return
-		}
-	}
-	next()
-})
+// app.use((req, res, next) => {
+// 	const { operation } = req.enforcer
+// 	if (operation.security !== undefined) {
+// 		const sessionIsRequired = operation.security.find(obj => obj.cookieAuth !== undefined)
+// 		if (sessionIsRequired && !req.user) {
+// 			res.sendStatus(401)
+// 			return
+// 		}
+// 	}
+// 	next()
+// })
 
 app.use(enforcerMiddleware.route({
 	accounts: Accounts(pool),

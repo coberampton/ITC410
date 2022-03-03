@@ -44,16 +44,17 @@ module.exports = function (pool) {
 		async deleteAccount (req, res) {
 			const { username } = req.enforcer.params
 			console.log('delete account')
+			const client = await pool.connect()
 			try {
 				await client.query('BEGIN')
 				let account = await accounts.getAccountByUsername(client, username)
 				if (account === undefined) {
 					res.enforcer.status(204).send()
-				} else if (account.account_id !== req.user.id) {
-					res.enforcer.status(403).send()
+//				} else if (account.account_id !== req.user.id) {
+//					res.enforcer.status(403).send()
 				} else {
-					await accounts.deleteAccount(pool, account.id)
-					res.enforcer.status(200).send()
+					await accounts.deleteAccount(client, account.account_id)
+					res.enforcer.status(204).send()
 				}
 				await client.query('COMMIT')
 			} catch (e) {
