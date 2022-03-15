@@ -2,6 +2,10 @@ export const state = () => ({
     list: []
   })
   
+  export const getters = {
+    
+  }
+
   export const mutations = {
     add(state, text) {
       state.list.push({
