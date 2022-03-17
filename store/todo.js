@@ -3,7 +3,9 @@ export const state = () => ({
   })
   
   export const getters = {
-    
+    Loggedin(state) {
+      return state.accounts.user
+    }
   }
 
   export const mutations = {

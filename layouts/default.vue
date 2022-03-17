@@ -56,6 +56,9 @@
       >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
+      <v-list-item-action v-if="user !== null">
+            <v-btn @click="logout()">Log Out</v-btn>
+      </v-list-item-action>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -111,7 +114,17 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Vuetify.js'
+      title: 'Game Site'
+    }
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('accounts/logout')
+    }
+  },
+  computed: {
+  user () {
+      return this.$store.state.accounts.user
     }
   }
 }

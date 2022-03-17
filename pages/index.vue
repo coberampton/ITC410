@@ -17,7 +17,7 @@
     <h1>Authentication</h1>
     <div v-if="user == null">
       <input :style="{color: 'white'}" v-model="username" placeholder="Username">
-      <input :style="{color: 'white'}" v-model:="password" placeholder="Password">
+      <input :style="{color: 'white'}" v-model="password" placeholder="Password">
     </div>
     <v-btn @click="login()">Log In</v-btn>
     <v-btn @click="logout()">Log Out</v-btn>
@@ -61,6 +61,9 @@ export default {
     },
     user () {
       return this.$store.state.accounts.user
+    },
+    Loggedin () {
+      return this.$store.getters.todo.Loggedin
     }
   }
 }
