@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn @click="load()">Load</v-btn>
+    <!-- <v-btn @click="load()">Load</v-btn>
 
     <div>
       <input v-model="text" placeholder="To do item to add">
@@ -12,15 +12,20 @@
       <li v-for="item in list" :key="item.text">
         {{item.text}}
       </li>
-    </ul>
+    </ul> -->
+    <div :style="{color: 'white'}" v-if="user == null">
+      <Pass-Off myText="InputText" @updateLength="length = $event"></Pass-Off>
+      {{length}}
+    </div>
 
-    <h1>Authentication</h1>
+    <h1 v-if="user == null">Authentication</h1>
     <div v-if="user == null">
       <input :style="{color: 'white'}" v-model="username" placeholder="Username">
       <input :style="{color: 'white'}" v-model="password" placeholder="Password">
     </div>
-    <v-btn @click="login()">Log In</v-btn>
-    <v-btn @click="logout()">Log Out</v-btn>
+    <!-- <v-btn v-if="user == null" @click="create()">Create Account</v-btn> -->
+    <v-btn v-if="user == null" @click="login()">Log In</v-btn>
+    <!-- <v-btn @click="logout()">Log Out</v-btn> -->
 
     <div v-if="user !== null">
       Logged in as {{user}}
@@ -30,11 +35,13 @@
 </template>
 
 <script>
+import PassOff from '~/components/pass-off.vue'
 export default {
   name: 'IndexPage',
   data () {
     return {
-      text: ''
+      text: '',
+      length: 0
     }
   },
   methods: {
@@ -65,6 +72,9 @@ export default {
     Loggedin () {
       return this.$store.getters.todo.Loggedin
     }
+  },
+  components: {
+    PassOff
   }
 }
 </script>
