@@ -12,6 +12,9 @@ module.exports = function (passport) {
                 res.cookie('user', JSON.stringify(req.user.name), {
                     maxAge: 36000000 // expires in 10 hours
                 })
+                res.cookie('username', JSON.stringify(req.user.username), {
+                    maxAge: 36000000 // expires in 10 hours
+                })
 
                 res.enforcer.status(200).send()
             })
@@ -19,6 +22,8 @@ module.exports = function (passport) {
 
         logout (req, res) {
             if (req.user) req.logout()
+            res.clearCookie('user')
+            res.clearCookie('username')
             res.enforcer.status(200).send()
         }
     }

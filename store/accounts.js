@@ -1,6 +1,6 @@
 export const state = () => {
     return {
-        user: getUserFromCookie()
+        user: getUserFromCookie(),
     }
 }
 
@@ -24,6 +24,14 @@ export const actions = {
     async logout ({ commit }) {
         const res = await this.$axios.put('/api/authentication/logout')
         if (res.status === 200) {
+            commit('setUser', null)
+        }
+    },
+    async delete ({ commit }) {
+        const res = await this.$axios.delete('/api/accounts/', {
+            username
+        })
+        if (res.status ===  204) {
             commit('setUser', null)
         }
     }
