@@ -67,7 +67,7 @@ export default {
     logout () {
       this.$store.dispatch('accounts/logout')
     },
-     async deleteAccount () {
+    async deleteAccount () {
       this.$store.dispatch('accounts/delete', {
         username: this.username
       })
