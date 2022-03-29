@@ -25,6 +25,7 @@
     </div>
     <!-- <v-btn v-if="user == null" @click="create()">Create Account</v-btn> -->
     <v-btn v-if="user == null" @click="login()">Log In</v-btn>
+    <v-btn v-if="user == null" to="/create">Create An Account</v-btn>
     <!-- <v-btn  @click="Logout()">Log Out</v-btn> -->
 
     <div v-if="user !== null">
@@ -32,7 +33,7 @@
       <p>Put in your username to delete account</p>
       <input :style="{color: 'white'}" v-model="username" placeholder="Username">
     </div>
-    <v-btn v-if="user !== null" @click="Delete()">Delete Account</v-btn>
+    <v-btn v-if="user !== null" @click="deleteAccount()">Delete Account</v-btn>
 
   </div>
 </template>
@@ -44,7 +45,9 @@ export default {
   data () {
     return {
       text: '',
-      length: 0
+      length: 0,
+      username: '',
+      password: ''
     }
   },
   methods: {
@@ -64,7 +67,7 @@ export default {
     logout () {
       this.$store.dispatch('accounts/logout')
     },
-    Delete () {
+     async deleteAccount () {
       this.$store.dispatch('accounts/delete', {
         username: this.username
       })
