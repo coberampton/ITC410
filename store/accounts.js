@@ -27,10 +27,11 @@ export const actions = {
             commit('setUser', null)
         }
     },
-    async delete ({ commit }, {username}) {
-        const res = await this.$axios.delete('/api/accounts/' + {username})
+    async delete ({ commit }, {delUsername}) {
+        const res = await this.$axios.delete('/api/accounts/' + delUsername)
         if (res.status ===  204) {
             commit('setUser', null)
+            return 'deleted'
         }
     },
     async create ({ commit }, {username, name, password}) {

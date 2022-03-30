@@ -31,7 +31,7 @@
     <div v-if="user !== null">
       Logged in as {{user}}
       <p>Put in your username to delete account</p>
-      <input :style="{color: 'white'}" v-model="username" placeholder="Username">
+      <input :style="{color: 'white'}" v-model="delUsername" placeholder="Username">
     </div>
     <v-btn v-if="user !== null" @click="deleteAccount()">Delete Account</v-btn>
 
@@ -47,7 +47,8 @@ export default {
       text: '',
       length: 0,
       username: '',
-      password: ''
+      password: '',
+      delUsername: ''
     }
   },
   methods: {
@@ -68,9 +69,13 @@ export default {
       this.$store.dispatch('accounts/logout')
     },
     async deleteAccount () {
-      this.$store.dispatch('accounts/delete', {
-        username: this.username
+      const success = await this.$store.dispatch('accounts/delete', {
+        delUsername: this.delUsername
       })
+      if (success === 'deleted') {
+        this.$store.dispatch('accounts/logout')
+        this.$router.push('/')
+      }
     }
   },
   computed: {
