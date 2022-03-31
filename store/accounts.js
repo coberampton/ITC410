@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs')
+
 export const state = () => {
     return {
         user: getUserFromCookie(),
@@ -41,6 +43,17 @@ export const actions = {
             password
         })
         return 'created'
+    },
+    async update ({ commit }, {username, name, password}) {
+        const newPassword = await encryptPassword(password)
+        const res = await this.$axios.patch('/api/accounts/' + username, {
+            username,
+            name,
+            newPassword
+        })
+        if (res.status ===  200) {
+            return 'updated'
+        }
     }
 }
 
@@ -52,4 +65,9 @@ function getUserFromCookie () {
     const re = new RegExp("user=([^;]+)") 
     const value = re.exec(document.cookie)
     return value != null ? unescape(value[1]) : null
+}
+
+async function encryptPassword (password) {
+    const salt = await bcrypt.genSalt(10)
+    return await bcrypt.hash(password, salt)
 }

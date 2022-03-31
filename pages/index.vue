@@ -13,10 +13,10 @@
         {{item.text}}
       </li>
     </ul> -->
-    <div :style="{color: 'white'}" v-if="user == null">
+    <!-- <div :style="{color: 'white'}" v-if="user == null">
       <Pass-Off myText="InputText" @updateLength="length = $event"></Pass-Off>
       {{length}}
-    </div>
+    </div> -->
 
     <h1 v-if="user == null">Authentication</h1>
     <div v-if="user == null">
@@ -33,7 +33,9 @@
       <p>Put in your username to delete account</p>
       <input :style="{color: 'white'}" v-model="delUsername" placeholder="Username">
     </div>
+    <p v-if="user !== null">Or click update to update your account</p>
     <v-btn v-if="user !== null" @click="deleteAccount()">Delete Account</v-btn>
+    <v-btn v-if="user !== null" to="/update">Update Account</v-btn>
 
   </div>
 </template>
