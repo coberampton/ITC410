@@ -36,6 +36,7 @@
     <p v-if="user !== null">Or click update to update your account</p>
     <v-btn v-if="user !== null" @click="deleteAccount()">Delete Account</v-btn>
     <v-btn v-if="user !== null" to="/update">Update Account</v-btn>
+    <v-btn v-if="user !== null" to="/createcharacter">Create Character</v-btn>
 
   </div>
 </template>

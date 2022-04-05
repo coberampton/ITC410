@@ -25,8 +25,8 @@ CREATE TABLE "characters" (
   "name" varchar(25) NOT NULL,
   "race" varchar(25) NOT NULL,
   "description" text NOT NULL,
-  "favoredAttribute" varchar(20) NOT NULL,
-  "unfavoredAttribute" varchar(20) NOT NULL,
+  "favoredattribute" varchar(20) NOT NULL,
+  "unfavoredattribute" varchar(20) NOT NULL,
   PRIMARY KEY ("character_id")
 );
 

@@ -44,6 +44,24 @@ export const actions = {
         })
         return 'created'
     },
+    async createcharacter ({ commit }, {name, race, description, favoredAttribute, unfavoredAttribute, username}) {
+        console.log('first step')
+        const res = await this.$axios.post('/api/characters', {
+            name,
+            race,
+            description,
+            favoredAttribute,
+            unfavoredAttribute,
+            username
+        })
+        if (res.status === 201) {
+            return 'created'
+        }
+        else {
+            console.log('first error')
+            return 'error'
+        }
+    },
     async update ({ commit }, {username, name, password}) {
         const newPassword = await encryptPassword(password)
         const res = await this.$axios.patch('/api/accounts/' + username, {
