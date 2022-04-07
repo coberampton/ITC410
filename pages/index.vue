@@ -30,13 +30,14 @@
 
     <div v-if="user !== null">
       Logged in as {{user}}
-      <p>Put in your username to delete account</p>
+      <p>Put in your username to delete account or see characters!</p>
       <input :style="{color: 'white'}" v-model="delUsername" placeholder="Username">
     </div>
     <p v-if="user !== null">Or click update to update your account</p>
     <v-btn v-if="user !== null" @click="deleteAccount()">Delete Account</v-btn>
     <v-btn v-if="user !== null" to="/update">Update Account</v-btn>
     <v-btn v-if="user !== null" to="/createcharacter">Create Character</v-btn>
+    <v-btn v-if="user !== null" @click="getCharacters()">Show my Characters</v-btn>
 
   </div>
 </template>
@@ -71,6 +72,9 @@ export default {
     logout () {
       this.$store.dispatch('accounts/logout')
     },
+    getCharacters () {
+      this.$store.dispatch('accounts/getCharacters', this.delUsername)
+    },
     async deleteAccount () {
       const success = await this.$store.dispatch('accounts/delete', {
         delUsername: this.delUsername
@@ -90,6 +94,9 @@ export default {
     },
     Loggedin () {
       return this.$store.getters.todo.Loggedin
+    },
+    characters () {
+      return this.$store.state.accounts.characters
     }
   },
   components: {

@@ -1,14 +1,20 @@
+import characters from '~/api/controllers/characters'
+
 const bcrypt = require('bcryptjs')
 
 export const state = () => {
     return {
         user: getUserFromCookie(),
+        characters: []
     }
 }
 
 export const mutations = {
     setUser (state, user) {
         state.user = user
+    },
+    setCharacters (state, characters) {
+        state.characters = characters
     }
 }
 
@@ -58,9 +64,18 @@ export const actions = {
             return 'created'
         }
         else {
-            console.log('first error')
             return 'error'
         }
+    },
+    async getCharacters( {commit}) {
+        const res = await this.$axios.get('api/characters')
+        if (res.status === 200) {
+            commit('setCharacters', res.data)
+        }
+      },
+
+    async deletecharacter ({ commit }, {name, username}) {
+        
     },
     async update ({ commit }, {username, name, password}) {
         const newPassword = await encryptPassword(password)
@@ -83,6 +98,10 @@ function getUserFromCookie () {
     const re = new RegExp("user=([^;]+)") 
     const value = re.exec(document.cookie)
     return value != null ? unescape(value[1]) : null
+}
+
+function getCharacters () {
+
 }
 
 async function encryptPassword (password) {
