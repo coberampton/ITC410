@@ -176,7 +176,7 @@ paths:
         400:
           description: Invalid request.
         401:
-          description: Not 
+          description: Not Authenticated
   /characters/{characterId}:
     x-controller: characters
     parameters:
