@@ -38,6 +38,11 @@
     <v-btn v-if="user !== null" to="/update">Update Account</v-btn>
     <v-btn v-if="user !== null" to="/createcharacter">Create Character</v-btn>
     <v-btn v-if="user !== null" @click="getCharacters()">Show my Characters</v-btn>
+    <!-- <ul v-if="user !== null">
+      <li v-for="item in characters" :key="item.text">
+        {{item.text}}
+      </li>
+    </ul> -->
 
   </div>
 </template>
