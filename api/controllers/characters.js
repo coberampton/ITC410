@@ -41,7 +41,7 @@ module.exports = function (pool) {
 					const data = await characters.getCharacters(pool, req.user.id) //formerly req.user.id
 					console.log('got characters')
                     console.log(data)
-                    res.enforcer.status(200).send({data})
+                    res.enforcer.status(200).send(data)
 				}
                 await client.query('COMMIT')
             } catch (e) {
@@ -55,7 +55,7 @@ module.exports = function (pool) {
         async updateCharacter (req, res) {
             console.log('updateCharacter')
 			const data = req.enforcer.body
-			const { characterid } = req.enforcer.params
+			const { characterId } = req.enforcer.params
 
 			const client = await pool.connect()
 			try {
@@ -64,7 +64,7 @@ module.exports = function (pool) {
 				if (req.user.id === undefined) {
 					res.enforcer.status(401).send()
 				} else {
-					await characters.updateCharacter(client, characterid, data) //formerly req.user.id
+					await characters.updateCharacter(client, characterId, data) //formerly req.user.id
 					res.enforcer.status(200).send(data)
 				}
 				await client.query('COMMIT')
@@ -77,7 +77,7 @@ module.exports = function (pool) {
         },
         
         async deleteCharacter (req, res) {
-            const { characterid } = req.enforcer.params
+            const { characterId } = req.enforcer.params
 			console.log('delete character')
 			const client = await pool.connect()
 			try {
@@ -85,7 +85,7 @@ module.exports = function (pool) {
 				if (req.user.id === undefined) {
 					res.enforcer.status(401).send()
 				} else {
-					await accounts.deleteCharacter(client, characterid)
+					await characters.deleteCharacter(client, characterId)
 					res.enforcer.status(204).send()
 				}
 				await client.query('COMMIT')

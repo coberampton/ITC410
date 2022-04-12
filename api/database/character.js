@@ -29,8 +29,9 @@ exports.getCharacters = async function (client, accountId) {
 }
 
 exports.deleteCharacter = async function (client, characterId) {
+    console.log(characterId)
     const { rowCount } = await client.query({
-        name: 'delete-acccharacter',
+        name: 'delete-character',
         text: 'DELETE FROM characters WHERE character_id=$1',
         values: [characterId]
     })
